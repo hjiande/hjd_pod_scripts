@@ -1,0 +1,133 @@
+<config app = "gnss_pod">
+    <gen>
+        <beg> 2018-01-01 00:00:00 </beg>        <!--> 开始时间                                                     <!-->
+        <end> 2018-01-01 23:55:00 </end>        <!--> 结束时间                                                     <!-->
+        <sys> GAL </sys>        <!--> 处理系统 ex : GPS_GAL_GLO_QZS_BDS                                                      <!-->
+        <rec>                   <!--> 处理测站                                                                                 <!-->
+			ABMF ARUC BRUX CUSV FAIR GOPE KARR LAUT METG NNOR PIE1
+			ABPO ASCG CAS1 DAEJ FALK GRAZ KAT1 LHAZ MGUE NRC1 PIMO
+			AGGO AUCK CEBR DARW FFMJ GUAM KIRU LMMF MIZU NRMD PNGM
+			AJAC BAKO CEDU DAV1 FTNA HARB KOKV LPGS MOBS NTUS POHN
+			ALBH BOAV CHPG DJIG GANP HKWS KOUC MAJU MQZG OHI3 POVE
+			ALIC BOGT CHPI DUBO GENO HOB2 KOUG MAS1 MRO1 ONS1 PTAG
+			AMC4 BOR1 CHTI DUND GMSD IISC KOUR MAW1 NAUR PALM QUIN
+			ANKR BRAZ COCO DYNG GODE INEG KRGG MBAR NICO PARK RDSD
+			AREG BREW CPVG EBRE GODN JFNG KUUJ MCM4 NIUM PERT REUN
+			AREQ BRST CRO1 FAA1 GODS JPLM KZN2 MDO1 NKLG PICL REYK
+			RGDG SALU SAVO SCRZ SEY2 SGOC STHL STR2 SYDN TID1 TUVA
+			RIGA SAMO SCH2 SCTB SEYG SOLO STR1 SUTH THTG TONG TWTF
+			UCAL ULAB UNSA USN7 WARK WGTN XMIS YAR3 YEL2 ZAMB YELL
+			UFPR UNB3 URUM VACS WARN WUH2 YAR2 YARR                                                      
+        </rec>
+        <int> 300 </int>        <!--> 采样频率                         <!-->
+    </gen>
+
+	<gal>
+	    <sat>
+		  E01 E02 E03 E04 E05 
+		      E07 E08 E09    
+		  E11 E12 E13 E14 E15 
+		          E18 E19 E20
+		  E21 E22     E24 E25 
+		  E26 E27         E30
+		  E31     E33
+		  E36	    
+	  </sat>
+	    <freq> 1 2 3 </freq>
+		<band> 1 5 7 </band>
+	</gal>
+
+    <parameters>
+        <STA ID="XXXX" sigCLK="9000" sigPOS="0.1_0.1_0.1" sigZTD="0.201" />
+        <SAT ID="XXX"  sigCLK="9000" />
+    </parameters>
+
+    <process crd_constr="FIX" grad_mf="chh" gradient="false" max_res_norm="5.0" minimum_elev="7" obs_weight="PARTELE" phase="true" sig_init_crd="100" sig_init_ztd="0.1" tropo="ture" tropo_mf="gmf" tropo_model="saastamoinen" 
+	lsq_mode = "LSQ"
+	ref_clk  = "E01"
+	sig_ref_clk = "1"
+	obs_combination = "RAW_ALL"
+	slip_model = "turboedit"
+	frequency="3"
+	ion_model  = "SION" ambfix="false"> <!--> IONO_FREE / RAW_ALL<!-->
+        <freq_model> TRIPLE      </freq_model>
+		<dcb_model>   CAS         </dcb_model>
+		<ifb_model>  EST_REC_IFB </ifb_model>
+		<iono_order> FIRST       </iono_order>
+	</process>
+     <orbdif>
+	    <excsat> G04 </excsat>
+	    <excsys> GPS QZS BDS GLO </excsys>
+	    <trans>  STRD </trans>
+    </orbdif>
+
+    <editres>
+	    <freq>        LC  </freq>       <!-->  LC / L1 / L2 / L3 / L4 / L5 <!-->
+		<mode>        L12 </mode>
+		<short_elisp> 600 </short_elisp>
+        <jump_elisp>  80  </jump_elisp> <!--> 80 / 40 <!-->
+        <bad_elisp>   80  </bad_elisp>  <!--> 80 / 40 <!-->
+	</editres>
+
+    <force_model_nav>
+        <spacecraft ID="GNS">
+            <integrator order="11" step_in="60" step_out="300" />
+            <gravity model="EGM08_12" valid="True" />
+            <relativity model="Default" valid="True" />
+            <point_mass model="Default" valid="True" />
+            <solar_radiation model="ECOM2" valid="True" />
+            <earth_radiation model="NONE" valid="False" />
+        </spacecraft>
+    </force_model_nav>
+    <ambiguity>
+        <ratio>    2.0    </ratio>
+        <add_leo>  NO     </add_leo>
+        <fix_mode> SEARCH </fix_mode>
+		<dd_mode>  RAW_CB </dd_mode>
+		<part_fix> YES    </part_fix>
+        <is_ppprtk>NO     </is_ppprtk>
+        <all_baselines>     NO   </all_baselines>
+        <min_common_time>   900  </min_common_time>
+        <widelane_interval> 30   </widelane_interval>
+        <baseline_length_limit>  3500  </baseline_length_limit>
+        <widelane_decision alpha="1000" maxdev="0.15" maxsig="0.10" />
+        <narrowlane_decision alpha="1000" maxdev="0.15" maxsig="0.10" />
+    </ambiguity>
+    <outputs>
+        <ics>  grt-YYYY--DDD-.ics </ics>
+        <cas>  grt-YYYY--DDD-.cas </cas>
+        <car>  grt-YYYY--DDD-.car </car>
+        <rcv>  grt-YYYY--DDD-.rcv </rcv>
+        <orb>  grt-YYYY--DDD-.orb </orb>
+        <con>  grt-YYYY--DDD-.con </con>
+        <dif>  grt-YYYY--DDD-.dif </dif>
+    </outputs>
+
+    <inputs>
+        <jpl> /workfs/jdhuang/jdhuang_obs/sys_file/grt_sysfile.jpl    </jpl>        <!--> # jpleph_de405                        <!-->
+        <sat> /workfs/jdhuang/jdhuang_obs/sys_file/grt_sysfile.sat    </sat>        <!--> # sat_parameters_new                  <!-->
+        <atx> /workfs/jdhuang/jdhuang_obs/sys_file/grt_sysfile.atx    </atx>        <!--> # igs_absolute_08.atx                 <!-->
+        <rec> /workfs/jdhuang/jdhuang_obs/sys_file/grt_sysfile.rec    </rec>        <!--> # RECEIVER.txt                        <!-->
+        <egm> /workfs/jdhuang/jdhuang_obs/sys_file/grt_sysfile.egm    </egm>        <!--> # EGM                                 <!-->
+        <lep> /workfs/jdhuang/jdhuang_obs/sys_file/grt_sysfile.lep    </lep>        <!--> # leap_seconds                        <!-->
+        <otd> /workfs/jdhuang/jdhuang_obs/sys_file/grt_sysfile.otd    </otd>        <!--> # ocean_tide                          <!-->
+        <blq> /workfs/jdhuang/jdhuang_obs/sys_file/grt_sysfile.blq    </blq>        <!--> # oceanload                           <!-->
+        <erp> /workfs/jdhuang/jdhuang_obs/sys_file/grt_sysfile.erp    </erp>        <!--> # poleut1                             <!-->
+        <rnn> /workfs/jdhuang/jdhuang_obs/rinexn/-YYYY-/-DDD-/brdm-DDD-0.-YY-p   </rnn>
+        <sp3> /workfs/jdhuang/jdhuang_obs/prod/-GWK-/cod-GWKD-.sp3      </sp3>
+        <ics> grt-YYYY--DDD-.ics </ics>
+        <orb> grt-YYYY--DDD-.orb </orb>
+        <con> grt-YYYY--DDD-.con </con>
+        <cas> grt-YYYY--DDD-.cas </cas>
+        <car> grt-YYYY--DDD-.car </car>
+        <ion> grt-YYYY--DDD-.ion </ion>
+        <rcv> grt-YYYY--DDD-.rcv </rcv>
+        <snx> /workfs/jdhuang/jdhuang_obs/snx/-YYYY-/igs-YY-P-GWK-.snx  </snx>
+        <dcb> 
+		      /workfs/jdhuang/jdhuang_obs/dcb/2019/CAS0MGXRAP_-YYYY--DDD-0000_01D_01D_DCB
+		</dcb>
+		<rno>   /project/jdhuang/projects/megx_e_157/-YYYY-/-DDD-/-CEN--DDD-0.-YY-o     </rno>
+		<flg>   ./log_tb/-CEN--DDD-0.-YY-o.log   </flg>
+		<flg13> ./log_tb/-CEN--DDD-0.-YY-o.log13 </flg13>
+	</inputs>
+</config>
